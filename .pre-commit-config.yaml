@@ -1,0 +1,66 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: check-added-large-files
+    -   id: check-case-conflict
+    -   id: check-docstring-first
+    -   id: check-executables-have-shebangs
+    -   id: check-json
+    -   id: check-merge-conflict
+    -   id: check-shebang-scripts-are-executable
+    -   id: check-symlinks
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: pretty-format-json
+        args: ['--autofix']
+    -   id: requirements-txt-fixer
+    -   id: trailing-whitespace
+
+-   repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 23.9.1
+    hooks:
+    - id: black
+      args:
+        - --line-length=100
+
+-   repo: https://github.com/pycqa/flake8.git
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-black>=0.1.1
+          - flake8-docstrings
+        language_version: python3
+        args:
+          - --max-line-length=100
+          - --ignore=BLK100, E203, E266, E501, W503
+          - --max-complexity=18
+          - --select=B,C,E,F,W,T4,B9
+
+-   repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
+    hooks:
+    - id: isort
+      args:
+        - --line-length=100
+        - --profile black
+
+- repo: https://github.com/myint/autoflake
+  rev: v2.2.1
+  hooks:
+    - id: autoflake
+      args:
+        - --in-place
+        - --remove-unused-variables
+        - --remove-all-unused-imports
+
+ci:
+    # Settings for the https://pre-commit.ci/ continuous integration service
+    autofix_prs: false
+    # Default message is more verbose
+    autoupdate_commit_msg: '[pre-commit.ci] autoupdate'
+    # Default is weekly
+    autoupdate_schedule: weekly
