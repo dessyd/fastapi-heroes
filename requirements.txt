@@ -1,1 +1,4 @@
+fastapi
 pre-commit
+sqlmodel
+uvicorn[standard]
