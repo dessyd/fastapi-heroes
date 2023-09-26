@@ -168,3 +168,5 @@ cython_debug/
 # Generated Data
 csv/*.csv
 *.sql
+#
+*.db
