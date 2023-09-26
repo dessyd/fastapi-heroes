@@ -1,4 +1,6 @@
 fastapi
 pre-commit
+pytest
+requests
 sqlmodel
 uvicorn[standard]
