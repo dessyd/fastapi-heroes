@@ -23,7 +23,7 @@ CORS_ORIGINS=http://localhost:3000,http://localhost:8080
 API_V1_PREFIX=/api/v1
 ```
 
-### Production Environment
+### Production Example
 
 ```bash
 # PostgreSQL database (recommended for production)
@@ -57,11 +57,13 @@ engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
 ```
 
 **Pros:**
+
 - Zero setup
 - No external dependencies
 - Perfect for development and testing
 
 **Cons:**
+
 - Single-threaded writes
 - Not suitable for high concurrency
 
@@ -84,11 +86,13 @@ uvicorn app.main:app
 ```
 
 **Connection string format:**
-```
+
+```python
 postgresql+asyncpg://username:password@host:port/database
 ```
 
 **Example with environment variable:**
+
 ```bash
 export DATABASE_URL="postgresql+asyncpg://heroesadmin:securepass@db.example.com:5432/heroes_prod"
 uvicorn app.main:app
@@ -109,6 +113,7 @@ DATABASE_URL=mysql+aiomysql://user:password@localhost:3306/heroesdb
 ### Environment Variables in Docker
 
 Create `.env.docker`:
+
 ```bash
 DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/heroesdb
 LOG_LEVEL=info
@@ -116,6 +121,7 @@ DEBUG=false
 ```
 
 Use in docker-compose:
+
 ```yaml
 services:
   api:
@@ -125,6 +131,7 @@ services:
 ```
 
 Or load from file:
+
 ```yaml
 services:
   api:
@@ -212,11 +219,13 @@ SECRET_KEY=$(openssl rand -hex 32)
 ## Best Practices
 
 1. **Never commit `.env` files**
+
    ```bash
    echo ".env*" >> .gitignore
    ```
 
 2. **Use `.env.example` for documentation**
+
    ```bash
    # .env.example
    DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/heroesdb
@@ -225,6 +234,7 @@ SECRET_KEY=$(openssl rand -hex 32)
    ```
 
 3. **Use strong database passwords in production**
+
    ```bash
    # Generate secure password
    openssl rand -base64 32
@@ -246,16 +256,19 @@ SECRET_KEY=$(openssl rand -hex 32)
 ### Connection String Issues
 
 **Error:** `could not translate host name "localhost" to address`
+
 - **Cause:** Database host not reachable
 - **Solution:** Check database is running and host is correct
 
 **Error:** `permission denied for schema public`
+
 - **Cause:** User doesn't have permissions
 - **Solution:** Grant permissions to user on database
 
 ### Environment Variable Not Read
 
 **Error:** Variable not set despite being in `.env`
+
 - **Solution:** Ensure `.env` file is in project root
 - **Solution:** Restart application after changing `.env`
 

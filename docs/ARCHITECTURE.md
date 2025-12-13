@@ -30,12 +30,14 @@ graph LR
 **Purpose:** HTTP request handling and routing
 
 **Key Responsibilities:**
+
 - Receive HTTP requests
 - Route requests to appropriate handlers
 - Return JSON responses
 - Manage application lifespan (startup/shutdown)
 
 **Why Async?**
+
 ```python
 @app.get("/heroes")
 async def read_heroes():
@@ -46,6 +48,7 @@ async def read_heroes():
 ```
 
 Benefits:
+
 - **Scalability:** Handle thousands of concurrent connections
 - **Performance:** Better CPU utilization during I/O waits
 - **Resource Efficiency:** No thread per connection overhead
@@ -57,7 +60,7 @@ Benefits:
 **Why SQLModel Instead of Alternatives?**
 
 | Tool | ORM | Validation | Pros | Cons |
-|------|-----|-----------|------|------|
+| ------ | ----- | ----------- | ------ | ------ |
 | **SQLModel** | ✅ SQLAlchemy | ✅ Pydantic v2 | Single definition, auto docs | Newer, smaller community |
 | **SQLAlchemy ORM** | ✅ | ❌ | Mature, robust | Separate schema definitions |
 | **Pydantic ORM** | ❌ | ✅ | Simple validation | No database ORM |
@@ -87,6 +90,7 @@ class Hero(SQLModel, table=True):
 **Purpose:** Database connection and session management
 
 **Architecture:**
+
 ```python
 # Connection pooling
 engine = create_engine(
@@ -102,6 +106,7 @@ def get_session() -> Generator[Session, None, None]:
 ```
 
 **Why Dependency Injection?**
+
 - **Testability:** Easy to mock sessions in tests
 - **Isolation:** Each request gets its own session
 - **Resource Management:** Sessions created and closed properly
@@ -110,7 +115,7 @@ def get_session() -> Generator[Session, None, None]:
 
 **Purpose:** Endpoint definitions for each resource
 
-**Pattern: CRUD Operations**
+#### Pattern: CRUD Operations
 
 ```python
 @router.post("/", status_code=201)  # Create
@@ -138,7 +143,7 @@ async def delete_hero(hero_id: int):
 
 ### Request Processing Flow
 
-```
+```text
 1. Client sends HTTP request
    ↓
 2. FastAPI receives request
@@ -226,7 +231,8 @@ erDiagram
 
 ### Relationships
 
-**One-to-Many: Team → Heroes**
+#### One-to-Many: Team → Heroes
+
 ```python
 class Team(SQLModel, table=True):
     heroes: list["Hero"] = Relationship(back_populates="team")
@@ -236,6 +242,7 @@ class Hero(SQLModel, table=True):
 ```
 
 **Benefits of Bidirectional Relationships:**
+
 - Access heroes from team: `team.heroes`
 - Access team from hero: `hero.team`
 - Automatic synchronization
@@ -297,7 +304,7 @@ def process_heroes(heroes: List[Hero]) -> List[HeroRead]:
 ### HTTP Status Codes
 
 | Code | Meaning | When Used |
-|------|---------|-----------|
+| ------ | --------- | ----------- |
 | 200 | OK | Successful GET, PATCH |
 | 201 | Created | Successful POST |
 | 204 | No Content | Successful DELETE |
@@ -360,11 +367,13 @@ def client(session):
 ### Database Optimization
 
 1. **Indexing**
+
    ```python
    name: str = Field(index=True)  # Fast lookups
    ```
 
 2. **Connection Pooling**
+
    ```python
    engine = create_engine(
        url,
@@ -374,6 +383,7 @@ def client(session):
    ```
 
 3. **Query Optimization**
+
    ```python
    # Use pagination
    heroes = session.exec(
@@ -396,22 +406,26 @@ def client(session):
 ## Scalability Path
 
 ### Development (Current)
-```
+
+```text
 Browser → FastAPI (1 process) → SQLite
 ```
 
 ### Small Production
-```
+
+```text
 nginx → Gunicorn (4 workers) → PostgreSQL
 ```
 
 ### Medium Production
-```
+
+```text
 Load Balancer → Gunicorn × N → PostgreSQL + Cache (Redis)
 ```
 
 ### Large Scale
-```
+
+```text
 CDN → Load Balancer → Kubernetes Pods → PostgreSQL Cluster + Redis Cluster
 ```
 
@@ -420,6 +434,7 @@ CDN → Load Balancer → Kubernetes Pods → PostgreSQL Cluster + Redis Cluster
 ### Built-In Protections
 
 1. **Input Validation**
+
    ```python
    # Pydantic validates all inputs
    class HeroCreate(HeroBase):
@@ -428,6 +443,7 @@ CDN → Load Balancer → Kubernetes Pods → PostgreSQL Cluster + Redis Cluster
    ```
 
 2. **SQL Injection Prevention**
+
    ```python
    # Using ORM prevents SQL injection
    hero = session.get(Hero, hero_id)
@@ -436,6 +452,7 @@ CDN → Load Balancer → Kubernetes Pods → PostgreSQL Cluster + Redis Cluster
    ```
 
 3. **Type Safety**
+
    ```python
    # Type hints enable static analysis
    def update_hero(hero_id: int, updates: HeroUpdate):

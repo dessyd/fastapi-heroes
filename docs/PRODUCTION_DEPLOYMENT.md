@@ -15,7 +15,7 @@
 
 ### Recommended Architecture
 
-```
+```text
 ┌─────────────────────┐
 │      Users          │
 └──────────┬──────────┘
@@ -91,6 +91,7 @@ WORKERS=4
 #### 1.3 Gunicorn Configuration
 
 Create `gunicorn_config.py`:
+
 ```python
 import multiprocessing
 import os
@@ -123,6 +124,7 @@ pidfile = "/tmp/gunicorn.pid"
 #### 1.4 Systemd Service
 
 Create `/etc/systemd/system/fastapi-heroes.service`:
+
 ```ini
 [Unit]
 Description=FastAPI Heroes Application
@@ -162,6 +164,7 @@ sudo journalctl -u fastapi-heroes -f
 #### 1.6 Nginx Configuration
 
 Create `/etc/nginx/sites-available/fastapi-heroes`:
+
 ```nginx
 # HTTP to HTTPS redirect
 server {
@@ -269,6 +272,7 @@ CMD ["gunicorn", \
 #### 2.2 Docker Compose (Production)
 
 Create `compose.prod.yml`:
+
 ```yaml
 services:
   postgres:
@@ -342,6 +346,7 @@ docker compose -f compose.prod.yml down
 ### Option 3: Kubernetes (Advanced)
 
 Create `k8s/deployment.yaml`:
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -557,13 +562,15 @@ server {
 
 ### Common Issues
 
-**Service won't start**
+#### Service won't start
+
 ```bash
 sudo systemctl status fastapi-heroes
 sudo journalctl -u fastapi-heroes -n 50
 ```
 
-**Database connection fails**
+#### Database connection fails
+
 ```bash
 # Check PostgreSQL is running
 sudo systemctl status postgresql
@@ -572,7 +579,8 @@ sudo systemctl status postgresql
 psql -U heroesuser -d heroes_prod -h localhost
 ```
 
-**High memory usage**
+#### High memory usage
+
 ```bash
 # Check for memory leaks
 ps aux | grep gunicorn

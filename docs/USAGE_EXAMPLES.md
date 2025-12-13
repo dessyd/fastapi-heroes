@@ -17,6 +17,7 @@ curl -X POST http://localhost:8000/heroes \
 ```
 
 **Response:**
+
 ```json
 {
   "id": 1,

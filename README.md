@@ -83,7 +83,7 @@ See [Production Deployment](docs/PRODUCTION_DEPLOYMENT.md) for detailed setup.
 Complete documentation is organized in the `docs/` directory:
 
 | Document | Purpose |
-|----------|---------|
+| ---------- | --------- |
 | [📋 Configuration Guide](docs/CONFIGURATION.md) | Environment variables, database setup, and environment-specific settings |
 | [🚀 Usage Examples](docs/USAGE_EXAMPLES.md) | Real-world scenarios, integration patterns, and code examples |
 | [🏗️ Architecture Guide](docs/ARCHITECTURE.md) | System design, component breakdown, data flow, and performance |
@@ -100,7 +100,7 @@ Complete documentation is organized in the `docs/` directory:
 ## Technology Stack
 
 | Component | Version | Purpose |
-|-----------|---------|---------|
+| ----------- | --------- | --------- |
 | **FastAPI** | 0.117.1 | Web framework |
 | **SQLModel** | 0.0.25 | ORM + validation |
 | **Pydantic** | 2.11.9 | Data validation |
@@ -111,7 +111,7 @@ Complete documentation is organized in the `docs/` directory:
 
 ## Project Structure
 
-```
+```text
 fastapi-heroes/
 ├── app/
 │   ├── __init__.py

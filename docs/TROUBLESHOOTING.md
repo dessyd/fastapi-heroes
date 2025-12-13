@@ -472,7 +472,7 @@ If you can't resolve an issue:
 ## Quick Reference
 
 | Issue | Quick Fix |
-|-------|-----------|
+| ------- | ----------- |
 | Module not found | `source .venv/bin/activate && pip install -r requirements.txt` |
 | Database locked | `rm database.db && restart server` |
 | Port in use | `uvicorn app.main:app --port 8001` |

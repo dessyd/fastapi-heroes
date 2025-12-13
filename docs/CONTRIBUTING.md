@@ -158,7 +158,7 @@ python -m pytest app/test_main.py --cov=app --cov-report=term-missing
 
 Follow conventional commit format:
 
-```
+```text
 <type>(<scope>): <subject>
 
 <body>
@@ -379,7 +379,7 @@ When adding features:
 
 ## Documentation
 
-### Update Documentation For:
+### Update Documentation For
 
 - **New features** → Update `docs/USAGE_EXAMPLES.md`
 - **Configuration changes** → Update `docs/CONFIGURATION.md`
@@ -388,14 +388,14 @@ When adding features:
 
 ## Security Guidelines
 
-### Never Commit:
+### Never Commit
 
 - `.env` files with secrets
 - API keys, tokens, or credentials
 - Database passwords in code
 - Private configuration
 
-### Always Use:
+### Always Use
 
 - Environment variables for secrets
 - `.env.example` template for configuration
