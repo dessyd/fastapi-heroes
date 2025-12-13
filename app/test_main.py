@@ -3,13 +3,17 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
-from app.main import Hero, app, get_session
+from app.classes import Hero
+from app.database import get_session
+from app.main import app
 
 
 @pytest.fixture(name="session")
 def session_fixture():
     engine = create_engine(
-        "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
     )
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
@@ -31,7 +35,7 @@ def test_create_hero(client: TestClient):
     response = client.post("/heroes/", json={"name": "Deadpond", "secret_name": "Dive Wilson"})
     data = response.json()
 
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert data["name"] == "Deadpond"
     assert data["secret_name"] == "Dive Wilson"
     assert data["age"] is None
@@ -118,6 +122,6 @@ def test_delete_hero(session: Session, client: TestClient):
 
     hero_in_db = session.get(Hero, hero_1.id)
 
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     assert hero_in_db is None

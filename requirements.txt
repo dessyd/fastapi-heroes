@@ -1,7 +1,7 @@
-fastapi
-httpx
-pre-commit
-pytest
-requests
-sqlmodel
-uvicorn[standard]
+fastapi~=0.117.0
+httpx~=0.28.0
+pre-commit~=3.2.0
+pytest~=8.2.0
+requests~=2.31.0
+sqlmodel~=0.0.25
+uvicorn[standard]~=0.38.0

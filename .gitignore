@@ -170,3 +170,13 @@ csv/*.csv
 *.sql
 #
 *.db
+
+# Claude
+.claude/
+
+# Markdownlint
+.markdownlint.json
+.markdownlint-cli2.jsonc
+
+# Local VS Code setting
+.vscode/

@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -9,9 +7,9 @@ class TeamBase(SQLModel):
 
 
 class Team(TeamBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
 
-    heroes: List["Hero"] = Relationship(back_populates="team")
+    heroes: list["Hero"] = Relationship(back_populates="team")
 
 
 class TeamCreate(TeamBase):
@@ -23,23 +21,23 @@ class TeamRead(TeamBase):
 
 
 class TeamUpdate(SQLModel):
-    id: Optional[int] = None
-    name: Optional[str] = None
-    headquarters: Optional[str] = None
+    id: int | None = None
+    name: str | None = None
+    headquarters: str | None = None
 
 
 class HeroBase(SQLModel):
     name: str = Field(index=True)
     secret_name: str
-    age: Optional[int] = Field(default=None, index=True)
+    age: int | None = Field(default=None, index=True)
 
-    team_id: Optional[int] = Field(default=None, foreign_key="team.id")
+    team_id: int | None = Field(default=None, foreign_key="team.id")
 
 
 class Hero(HeroBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
 
-    team: Optional[Team] = Relationship(back_populates="heroes")
+    team: Team | None = Relationship(back_populates="heroes")
 
 
 class HeroRead(HeroBase):
@@ -51,15 +49,15 @@ class HeroCreate(HeroBase):
 
 
 class HeroUpdate(SQLModel):
-    name: Optional[str] = None
-    secret_name: Optional[str] = None
-    age: Optional[int] = None
-    team_id: Optional[int] = None
+    name: str | None = None
+    secret_name: str | None = None
+    age: int | None = None
+    team_id: int | None = None
 
 
 class HeroReadWithTeam(HeroRead):
-    team: Optional[TeamRead] = None
+    team: TeamRead | None = None
 
 
 class TeamReadWithHeroes(TeamRead):
-    heroes: List[HeroRead] = []
+    heroes: list[HeroRead] = []

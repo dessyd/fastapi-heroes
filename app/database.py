@@ -1,3 +1,5 @@
+from collections.abc import Generator
+
 from sqlmodel import Session, create_engine
 
 sqlite_file_name = "database.db"
@@ -7,6 +9,6 @@ connect_args = {"check_same_thread": False}
 engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
 
 
-def get_session():
+def get_session() -> Generator[Session, None, None]:
     with Session(engine) as session:
         yield session
