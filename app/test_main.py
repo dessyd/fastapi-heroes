@@ -125,3 +125,254 @@ def test_delete_hero(session: Session, client: TestClient):
     assert response.status_code == 204
 
     assert hero_in_db is None
+
+
+# ============================================================================
+# TEAM TESTS
+# ============================================================================
+
+
+def test_create_team(client: TestClient):
+    response = client.post(
+        "/teams/",
+        json={"name": "Avengers", "headquarters": "New York"},
+    )
+    data = response.json()
+
+    assert response.status_code == 201
+    assert data["name"] == "Avengers"
+    assert data["headquarters"] == "New York"
+    assert data["id"] is not None
+
+
+def test_create_team_incomplete(client: TestClient):
+    response = client.post("/teams/", json={"name": "Avengers"})
+    assert response.status_code == 422
+
+
+def test_read_teams(session: Session, client: TestClient):
+    from app.classes import Team
+
+    team_1 = Team(name="Avengers", headquarters="New York")
+    team_2 = Team(name="X-Men", headquarters="Westchester")
+    session.add(team_1)
+    session.add(team_2)
+    session.commit()
+
+    response = client.get("/teams/")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data) == 2
+    assert data[0]["name"] == team_1.name
+    assert data[1]["name"] == team_2.name
+
+
+def test_read_team(session: Session, client: TestClient):
+    from app.classes import Team
+
+    team_1 = Team(name="Avengers", headquarters="New York")
+    session.add(team_1)
+    session.commit()
+
+    response = client.get(f"/teams/{team_1.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["name"] == team_1.name
+    assert data["headquarters"] == team_1.headquarters
+    assert data["id"] == team_1.id
+
+
+def test_read_team_with_heroes(session: Session, client: TestClient):
+    from app.classes import Team
+
+    team_1 = Team(name="Avengers", headquarters="New York")
+    hero_1 = Hero(name="Iron Man", secret_name="Tony Stark", team=team_1)
+    session.add(team_1)
+    session.add(hero_1)
+    session.commit()
+
+    response = client.get(f"/teams/{team_1.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["name"] == team_1.name
+    assert len(data["heroes"]) == 1
+    assert data["heroes"][0]["name"] == "Iron Man"
+
+
+def test_update_team(session: Session, client: TestClient):
+    from app.classes import Team
+
+    team_1 = Team(name="Avengers", headquarters="New York")
+    session.add(team_1)
+    session.commit()
+
+    response = client.patch(
+        f"/teams/{team_1.id}",
+        json={"name": "Avengers United"},
+    )
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["name"] == "Avengers United"
+    assert data["headquarters"] == "New York"
+    assert data["id"] == team_1.id
+
+
+def test_delete_team(session: Session, client: TestClient):
+    from app.classes import Team
+
+    team_1 = Team(name="Avengers", headquarters="New York")
+    session.add(team_1)
+    session.commit()
+
+    response = client.delete(f"/teams/{team_1.id}")
+
+    team_in_db = session.get(Team, team_1.id)
+
+    assert response.status_code == 204
+    assert team_in_db is None
+
+
+# ============================================================================
+# ERROR HANDLING TESTS
+# ============================================================================
+
+
+def test_get_hero_not_found(client: TestClient):
+    response = client.get("/heroes/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Hero not found"
+
+
+def test_update_hero_not_found(client: TestClient):
+    response = client.patch(
+        "/heroes/999",
+        json={"name": "Updated"},
+    )
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Hero not found"
+
+
+def test_delete_hero_not_found(client: TestClient):
+    response = client.delete("/heroes/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Hero not found"
+
+
+def test_get_team_not_found(client: TestClient):
+    response = client.get("/teams/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Team not found"
+
+
+def test_update_team_not_found(client: TestClient):
+    response = client.patch(
+        "/teams/999",
+        json={"name": "Updated"},
+    )
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Team not found"
+
+
+def test_delete_team_not_found(client: TestClient):
+    response = client.delete("/teams/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Team not found"
+
+
+# ============================================================================
+# RELATIONSHIP TESTS
+# ============================================================================
+
+
+def test_create_hero_with_team(session: Session, client: TestClient):
+    from app.classes import Team
+
+    team = Team(name="Avengers", headquarters="New York")
+    session.add(team)
+    session.commit()
+
+    response = client.post(
+        "/heroes/",
+        json={
+            "name": "Iron Man",
+            "secret_name": "Tony Stark",
+            "team_id": team.id,
+        },
+    )
+    data = response.json()
+
+    assert response.status_code == 201
+    assert data["name"] == "Iron Man"
+
+
+def test_read_hero_with_team_relationship(session: Session, client: TestClient):
+    from app.classes import Team
+
+    team = Team(name="Avengers", headquarters="New York")
+    hero = Hero(name="Iron Man", secret_name="Tony Stark", team=team)
+    session.add(team)
+    session.add(hero)
+    session.commit()
+
+    response = client.get(f"/heroes/{hero.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["name"] == "Iron Man"
+    assert data["team"] is not None
+    assert data["team"]["name"] == "Avengers"
+
+
+# ============================================================================
+# PAGINATION TESTS
+# ============================================================================
+
+
+def test_read_heroes_with_offset(session: Session, client: TestClient):
+    for i in range(5):
+        hero = Hero(
+            name=f"Hero{i}",
+            secret_name=f"Secret{i}",
+        )
+        session.add(hero)
+    session.commit()
+
+    response = client.get("/heroes/?offset=2&limit=2")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data) == 2
+    assert data[0]["name"] == "Hero2"
+
+
+def test_read_teams_with_limit(session: Session, client: TestClient):
+    from app.classes import Team
+
+    for i in range(5):
+        team = Team(
+            name=f"Team{i}",
+            headquarters=f"Location{i}",
+        )
+        session.add(team)
+    session.commit()
+
+    response = client.get("/teams/?limit=2")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data) == 2
+
+
+# ============================================================================
+# ROOT ENDPOINT TEST
+# ============================================================================
+
+
+def test_root_endpoint(client: TestClient):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json()["version"] == "1.0.0"
