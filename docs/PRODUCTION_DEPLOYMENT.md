@@ -82,7 +82,7 @@ nano .env
 
 ```bash
 # .env (production)
-DATABASE_URL=postgresql+asyncpg://heroesuser:secretpassword@localhost:5432/heroes_prod
+DATABASE_URL=postgresql://heroesuser:secretpassword@localhost:5432/heroes_prod
 LOG_LEVEL=info
 DEBUG=false
 WORKERS=4
@@ -317,7 +317,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - api
