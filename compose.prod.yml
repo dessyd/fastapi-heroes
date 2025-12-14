@@ -22,7 +22,7 @@ services:
     build: .
     container_name: fastapi-heroes-api
     environment:
-      - DATABASE_URL=postgresql+asyncpg://heroesuser:${DB_PASSWORD:-changeme}@postgres:5432/heroes_prod
+      - DATABASE_URL=postgresql://heroesuser:${DB_PASSWORD:-changeme}@postgres:5432/heroes_prod
       - LOG_LEVEL=info
       - DEBUG=false
     depends_on:
