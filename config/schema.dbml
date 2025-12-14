@@ -1,0 +1,27 @@
+// FastAPI Heroes Database Schema
+// Generated from app/classes.py SQLModel definitions
+
+Table team {
+  id int [pk, increment]
+  name string [not null, unique, note: "Team name"]
+  headquarters string [not null, note: "Team headquarters location"]
+
+  indexes {
+    name
+  }
+}
+
+Table hero {
+  id int [pk, increment]
+  name string [not null, note: "Hero name"]
+  secret_name string [not null, note: "Hero's secret identity"]
+  age int [note: "Hero's age"]
+  team_id int [ref: > team.id, note: "Reference to team"]
+
+  indexes {
+    name
+    age
+  }
+}
+
+Ref: hero.team_id > team.id [delete: cascade]
