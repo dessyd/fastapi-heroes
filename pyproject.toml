@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastapi-heroes"
+version = "1.0.0"
+description = "Production-ready REST API demonstrating FastAPI and SQLModel best practices"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = [
+    "fastapi",
+    "sqlmodel",
+    "api",
+    "rest",
+    "python",
+    "postgres",
+    "docker"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "fastapi~=0.117.0",
+    "uvicorn[standard]~=0.38.0",
+    "sqlmodel~=0.0.25",
+    "httpx~=0.28.0",
+    "requests~=2.31.0",
+    "gunicorn~=23.0.0",
+    "psycopg2-binary~=2.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest~=8.2.0",
+    "pre-commit~=3.2.0",
+]
+
+[tool.setuptools]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["app"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
